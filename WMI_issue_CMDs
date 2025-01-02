@@ -1,0 +1,39 @@
+net stop wuauserv 
+net stop cryptSvc 
+net stop bits 
+net stop msiserver 
+ren C:\Windows\SoftwareDistribution SoftwareDistribution.old 
+ren C:\Windows\System32\catroot2 catroot2.old 
+net start wuauserv 
+net start cryptSvc 
+net start bits 
+net start msiserver
+net stop wuauserv 
+cd %systemroot% 
+ren SoftwareDistribution SoftwareDistribution.old 
+net start wuauserv 
+net stop bits 
+net start bits 
+net stop cryptsvc 
+cd %systemroot%\system32 ren catroot2 catroot2.old 
+net start cryptsvc 
+regsvr32 Softpub.dll /s 
+regsvr32 Wintrust.dll /s 
+regsvr32 Initpki.dll /s 
+regsvr32 Mssip32.dll /s 
+regsvr32 "C:\Windows\System32\wbem\cimwin32.dll" 
+mofcomp "C:\Windows\System32\wbem\cimwin32.mof"
+cd "C:\Program Files\Microsoft Policy Platform
+mofcomp ExtendedStatus.mof"
+net stop winmgmt
+winmgmt /verifyrepository
+winmgmt /salvagerepository
+winmgmt /resetrepository
+for /f %s in ('dir /b *.mof') do mofcomp %s
+for /f %s in ('dir /b *.dll') do regsvr32 /s %s
+net start winmgmt
+cd %SystemRoot%\System32\wbem
+for /f %s in ('dir /b *.mof') do mofcomp %s
+net start wuauserv
+
+#check wuauserv is in start state, try restating this if the client installaion fails even after running this commands.
